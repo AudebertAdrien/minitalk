@@ -1,6 +1,6 @@
 client
 server
 
-*.*
+*.gitignore
 *.nfs
 *.sw*
