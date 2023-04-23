@@ -6,7 +6,7 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:04:10 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/18 14:12:18 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/04/23 19:22:46 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,6 @@
 # include <errno.h>
 # include <signal.h>
 
-int	send_bits(int pid, unsigned char c);
+void	send_bits(int pid, unsigned char c);
 
 #endif

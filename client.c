@@ -6,13 +6,13 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/19 15:42:18 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/04/23 19:22:05 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-int	send_bits(int pid, unsigned char c)
+void	send_bits(int pid, unsigned char c)
 {
 	int	mask;
 	int	i;
@@ -42,15 +42,17 @@ int	main(int argc, char **argv)
 	i = 0;
 	if (argc == 3)
 	{
-		str = argv[2];
+		printf("start\n");
 		pid = atoi(argv[1]);
+		str = argv[2];
 		while (str[i])
 		{
 			send_bits(pid, str[i]);
-			usleep(1000);
+			//usleep(500);
 			i++;
 		}
 	}
-	printf("error : number of args\n");
+	else
+		printf("error : number of args\n");
 	return (0);
 }

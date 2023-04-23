@@ -1,6 +1,9 @@
 client
 server
 
+libft/
+
+*.o
 *.gitignore
 *.nfs
 *.sw*
