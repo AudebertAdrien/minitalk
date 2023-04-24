@@ -6,13 +6,14 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/23 19:22:05 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/04/24 17:47:56 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	send_bits(int pid, unsigned char c)
+
+void	send_len_bits(int pid, unsigned int c)
 {
 	int	mask;
 	int	i;
@@ -20,10 +21,12 @@ void	send_bits(int pid, unsigned char c)
 
 	i = 0;
 	res = 0;
-	mask = 128;
-	while (i < 8)
+	mask = 1;
+	printf("d : %d\n", c);
+	while (i < 32)
 	{
-		res = (c << i) & mask;	
+		res = (c >> i) & mask;	
+		printf("%d\n", res);
 		if (res)
 			kill(pid, SIGUSR1);
 		else
@@ -33,24 +36,64 @@ void	send_bits(int pid, unsigned char c)
 	}
 }
 
+
+
+void	send_str_bits(int pid, unsigned int c)
+{
+	int	mask;
+	int	i;
+	int	res;
+
+	i = 0;
+	res = 0;
+	mask = 1;
+	printf("c = %c\n", c);
+	while (i < 8)
+	{
+		res = (c >> i) & mask;	
+		printf("%d\n", res);
+		if (res)
+			kill(pid, SIGUSR1);
+		else
+			kill(pid, SIGUSR2);
+		usleep(1000);
+		i++;
+	}
+}
+
+
 int	main(int argc, char **argv)
 {
 	int		pid;
 	char	*str;
+	char	*str_len;
 	int		i;
+	int		len;
 
 	i = 0;
 	if (argc == 3)
 	{
 		printf("start\n");
-		pid = atoi(argv[1]);
+		pid = ft_atoi(argv[1]);
 		str = argv[2];
-		while (str[i])
+		len = ft_strlen(str);
+		printf("len : %d\n", len);
+		/*
+		str_len = ft_itoa(len);
+		while (str_len[i])
 		{
 			send_bits(pid, str[i]);
-			//usleep(500);
 			i++;
 		}
+		*/
+		send_len_bits(pid, len);
+		/*
+		while (str[i])
+		{
+			send_str_bits(pid, str[i]);
+			i++;
+		}
+		*/
 	}
 	else
 		printf("error : number of args\n");

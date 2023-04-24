@@ -6,31 +6,66 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/23 19:18:49 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/04/24 18:34:59 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
 volatile int	bit_nb = 0;
+volatile int	sys_call = 0;
+
+int	get_str_len(int signal)
+{
+	static int	c = 0;
+
+	if (signal == SIGUSR1)
+		c |= (1 << bit_nb);
+	if (signal == SIGUSR2)
+		c &= ~(1 << bit_nb);
+	bit_nb += 1;
+	if (bit_nb == 32)
+	{
+		printf("\n====\n");
+		ft_putnbr_fd(c, 1);
+		printf("\n====\n");
+		bit_nb = 0;
+		//c = 0;
+		sys_call = 0;
+		return (0);
+	}
+	sys_call += 1;
+	return (0);
+}
 
 void	sigint_handler(int signal)
 {
-	static char	c;
+	static char	c = 0;
 
-	if (!c)
-		c = 0;	
-	if (signal == SIGUSR1)
-		c |= (128 >> bit_nb);
-	if (signal == SIGUSR2)
-		c &= ~(128 >> bit_nb);
-	bit_nb += 1;
-	if (bit_nb == 8)
+	if (sys_call < 32)
 	{
-		write(1, &c, 1);
-		bit_nb = 0;
-		c = 0;
+		printf("sys_call :%d\n", sys_call);
+		get_str_len(signal);
 	}
+	/*
+	else
+	{
+		printf("else");
+		if (signal == SIGUSR1)
+			c |= (1 << bit_nb);
+		if (signal == SIGUSR2)
+			c &= ~(1 << bit_nb);
+		bit_nb += 1;
+		if (bit_nb == 8)
+		{
+			printf("\n====\n");
+			write(1, &c, 1);
+			printf("\n====\n");
+			bit_nb = 0;
+			c = 0;
+		}
+	}
+	*/
 }
 
 void	set_signal_action()

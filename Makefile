@@ -2,7 +2,7 @@ CLIENT		= client
 SERVER		= server
 
 CC			= gcc -g
-CFLAGS		= -Wall -Wextra -Werror 
+CFLAGS		= -Wall -Wextra 
 
 INC			= -I ./include -I ./libft 
 CLIENT_SRCS		= client.c 
@@ -14,7 +14,7 @@ SERVER_OBJ			= $(SERVER_SRCS:%.c=%.o)
 %.o: %.c 
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
-all: make_libft $(CLIENT) $(SERVER)
+all: $(CLIENT) $(SERVER)
 
 make_libft:
 	@echo ✅ "Compile libft\n"
@@ -35,7 +35,7 @@ clean_lft:
 clean:
 	@rm -rf $(OBJ)
 
-fclean: clean clean_lft 
+fclean: clean 
 	@echo ✅ "Clean minitalk\n"
 	@rm -f $(CLIENT) $(SERVER)
 
