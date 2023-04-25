@@ -6,13 +6,11 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/25 19:28:34 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/04/25 19:44:25 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
-
-volatile int	sys_call = 0;
 
 int	get_str_len(int signal)
 {
@@ -26,11 +24,10 @@ int	get_str_len(int signal)
 	bit_nb += 1;
 	if (bit_nb == 32)
 	{
-		ft_putnbr_fd(x, 1);
+		printf("x : %d\n", x);
 		printf("\n");
 		bit_nb = 0;
 	}
-	sys_call += 1;
 	return (x);
 }
 
@@ -46,17 +43,20 @@ char	get_char(int signal)
 	bit_nb += 1;
 	if (bit_nb == 8)
 	{
+		printf("c : %c\n", c);
 		bit_nb = 0;
 		c = 0;
 		return (c);
 	}
+	return (0);
 }
 
 void	sigint_handler(int signal)
 {
+	//char	c;
 	static char	*str;
 	static int	len = 0;
-	char	c;
+	static int	sys_call = 0;
 
 	if (sys_call == 32)
 	{
@@ -64,10 +64,14 @@ void	sigint_handler(int signal)
 		ft_bzero(str, len);
 	}	
 	if (sys_call < 32)
+	{
 		len = get_str_len(signal);
+		sys_call += 1;
+	}
 	else
 	{
-		c = get_char(signal);
+		get_char(signal);
+		/*
 		if (c)
 		{
 			printf("\nccc = %c\n", c);
@@ -81,6 +85,7 @@ void	sigint_handler(int signal)
 			ft_putstr_fd(str, 1);
 			printf("\n");
 		}
+		*/
 	}
 }
 
