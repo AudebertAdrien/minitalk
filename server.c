@@ -6,7 +6,7 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/26 14:45:23 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/04/26 14:58:23 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	bits_to_int(int signal, int *x, int byte)
 			printf("byte 32 : %d\n", *x);
 		if (byte == 8)
 			printf("byte 8 : %d\n", *x);
-
 		bit_nb = 0;
 	}
 }
@@ -39,18 +38,17 @@ void	sigint_handler(int signal)
 	static int	sys_call = 0;
 	static int	i = 0;
 	static int	c = 0;
-
-	if (sys_call < 32)
-		bits_to_int(signal, &len, 32);
-
+	
 	if (sys_call == 32)
 	{
-		str = ft_calloc((len + 1),sizeof(char));
+		//str = ft_calloc((len + 1),sizeof(char));
 		printf("len : %d\n",len);
 		printf("sizeof : %ld\n", sizeof(str));
 	}
 	
-	if (sys_call > 32)
+	if (sys_call < 32)
+		bits_to_int(signal, &len, 32);
+	else
 	{
 		bits_to_int(signal, &c, 8);
 		if (sys_call == (32 + len))
@@ -60,8 +58,9 @@ void	sigint_handler(int signal)
 			len = 0;
 			c = 0;
 			len = 0;
-			str = NULL;
+			ft_bzero(str);
 			free(str);
+			str = NULL;
 		}
 	}
 
