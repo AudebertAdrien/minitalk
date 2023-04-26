@@ -6,7 +6,7 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/25 19:26:29 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/04/26 17:27:23 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,13 @@ int	main(int argc, char **argv)
 		pid = ft_atoi(argv[1]);
 		str = argv[2];
 		len = ft_strlen(str);
-		send_bits(pid, len, 32);
+		//send_bits(pid, len, 32);
 		while (str[i])
 		{
 			send_bits(pid, str[i], 8);
 			i++;
 		}
+		send_bits(pid, '\0', 8);
 	}
 	else
 		printf("error : number of args\n");

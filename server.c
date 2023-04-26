@@ -6,81 +6,52 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/25 19:28:34 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/04/26 17:31:12 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-volatile int	sys_call = 0;
-
-int	get_str_len(int signal)
+int	get_char(int signal, int *c, int bits_nb)
 {
-	static int	x = 0;
 	static int	bit_nb = 0;
 
 	if (signal == SIGUSR1)
-		x |= (1 << bit_nb);
+		*c |= (1 << bit_nb);
 	if (signal == SIGUSR2)
-		x &= ~(1 << bit_nb);
+		*c &= ~(1 << bit_nb);
 	bit_nb += 1;
-	if (bit_nb == 32)
-	{
-		ft_putnbr_fd(x, 1);
-		printf("\n");
-		bit_nb = 0;
-	}
-	sys_call += 1;
-	return (x);
-}
-
-char	get_char(int signal)
-{
-	static char	c = 0;
-	static int	bit_nb = 0;
-
-	if (signal == SIGUSR1)
-		c |= (1 << bit_nb);
-	if (signal == SIGUSR2)
-		c &= ~(1 << bit_nb);
-	bit_nb += 1;
-	if (bit_nb == 8)
+	if (bit_nb == bits_nb)
 	{
 		bit_nb = 0;
-		c = 0;
-		return (c);
+		return (1);
 	}
+	return (0);
 }
 
 void	sigint_handler(int signal)
 {
-	static char	*str;
-	static int	len = 0;
-	char	c;
+	static int c = 0;
+	static char *str;
 
-	if (sys_call == 32)
+	if (!str)
+		str = ft_calloc(100, sizeof(char));
+	if(get_char(signal, &c, 8))
 	{
-		str = malloc(sizeof(char) * len + 1);
-		ft_bzero(str, len);
-	}	
-	if (sys_call < 32)
-		len = get_str_len(signal);
-	else
-	{
-		c = get_char(signal);
-		if (c)
+		if (c == '\0')
 		{
-			printf("\nccc = %c\n", c);
-			str[sys_call - 32] = c;
+			printf("sizeof(*str) :%ld\n", sizeof(*str));
+			printf("sizeof(str) :%ld\n", sizeof(str));
+			ft_bzero(str, ft_strlen(str));
+			free(str);
 		}
-		sys_call += 1;
-
-		if (sys_call == 32 + len)
+		else
 		{
-			printf("=>\n");
+			str = ft_free_join(str, c); 
 			ft_putstr_fd(str, 1);
 			printf("\n");
 		}
+		c = 0;
 	}
 }
 

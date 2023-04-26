@@ -6,7 +6,7 @@ CFLAGS		= -Wall -Wextra
 
 INC			= -I ./include -I ./libft 
 CLIENT_SRCS		= client.c 
-SERVER_SRCS		= server.c 
+SERVER_SRCS		= server.c minitalk_utils.c 
 
 CLIENT_OBJ			= $(CLIENT_SRCS:%.c=%.o)
 SERVER_OBJ			= $(SERVER_SRCS:%.c=%.o)
