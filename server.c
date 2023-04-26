@@ -6,87 +6,59 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/25 19:44:25 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/04/26 12:08:58 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-int	get_str_len(int signal)
+char	bits_to_int(int signal, int *x, int byte)
 {
-	static int	x = 0;
 	static int	bit_nb = 0;
 
 	if (signal == SIGUSR1)
-		x |= (1 << bit_nb);
+		*x |= (1 << bit_nb);
 	if (signal == SIGUSR2)
-		x &= ~(1 << bit_nb);
+		*x &= ~(1 << bit_nb);
 	bit_nb += 1;
-	if (bit_nb == 32)
+	if (bit_nb == byte)
 	{
-		printf("x : %d\n", x);
-		printf("\n");
-		bit_nb = 0;
-	}
-	return (x);
-}
+		if (byte == 32)
+			printf("byte 32 : %d\n", *x);
+		if (byte == 8)
+			printf("byte 8 : %d\n", *x);
 
-char	get_char(int signal)
-{
-	static char	c = 0;
-	static int	bit_nb = 0;
-
-	if (signal == SIGUSR1)
-		c |= (1 << bit_nb);
-	if (signal == SIGUSR2)
-		c &= ~(1 << bit_nb);
-	bit_nb += 1;
-	if (bit_nb == 8)
-	{
-		printf("c : %c\n", c);
 		bit_nb = 0;
-		c = 0;
-		return (c);
+		return (*x);
 	}
 	return (0);
 }
 
 void	sigint_handler(int signal)
 {
-	//char	c;
 	static char	*str;
 	static int	len = 0;
 	static int	sys_call = 0;
+	static int	i = 0;
+	static int	c = 0;
 
 	if (sys_call == 32)
 	{
-		str = malloc(sizeof(char) * len + 1);
-		ft_bzero(str, len);
-	}	
+		str = ft_calloc((len + 1),sizeof(char));
+		printf("len : %d\n",len);
+		printf("sizeof : %ld\n", sizeof(str));
+	}
 	if (sys_call < 32)
 	{
-		len = get_str_len(signal);
-		sys_call += 1;
+		bits_to_int(signal, &len, 32);
 	}
 	else
 	{
-		get_char(signal);
-		/*
-		if (c)
-		{
-			printf("\nccc = %c\n", c);
-			str[sys_call - 32] = c;
-		}
-		sys_call += 1;
-
-		if (sys_call == 32 + len)
-		{
-			printf("=>\n");
-			ft_putstr_fd(str, 1);
-			printf("\n");
-		}
-		*/
+		bits_to_int(signal, &c, 8);
+		if (sys_call == (32 + len))
+			printf("END!!!! %d\n", 32 + len);
 	}
+	sys_call += 1;
 }
 
 void	set_signal_action()
