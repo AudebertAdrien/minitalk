@@ -6,13 +6,13 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/26 12:08:58 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/04/26 14:45:23 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-char	bits_to_int(int signal, int *x, int byte)
+void	bits_to_int(int signal, int *x, int byte)
 {
 	static int	bit_nb = 0;
 
@@ -29,9 +29,7 @@ char	bits_to_int(int signal, int *x, int byte)
 			printf("byte 8 : %d\n", *x);
 
 		bit_nb = 0;
-		return (*x);
 	}
-	return (0);
 }
 
 void	sigint_handler(int signal)
@@ -42,22 +40,31 @@ void	sigint_handler(int signal)
 	static int	i = 0;
 	static int	c = 0;
 
+	if (sys_call < 32)
+		bits_to_int(signal, &len, 32);
+
 	if (sys_call == 32)
 	{
 		str = ft_calloc((len + 1),sizeof(char));
 		printf("len : %d\n",len);
 		printf("sizeof : %ld\n", sizeof(str));
 	}
-	if (sys_call < 32)
-	{
-		bits_to_int(signal, &len, 32);
-	}
-	else
+	
+	if (sys_call > 32)
 	{
 		bits_to_int(signal, &c, 8);
 		if (sys_call == (32 + len))
+		{
 			printf("END!!!! %d\n", 32 + len);
+			sys_call = 0;
+			len = 0;
+			c = 0;
+			len = 0;
+			str = NULL;
+			free(str);
+		}
 	}
+
 	sys_call += 1;
 }
 
