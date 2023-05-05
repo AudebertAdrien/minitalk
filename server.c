@@ -6,13 +6,22 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/26 17:31:12 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:49:23 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-int	get_char(int signal, int *c, int bits_nb)
+
+void	send_signal_back(int signal, siginfo_t *info)
+{
+	if (signal == SIGUSR1)
+		kill(info->si_pid, SIGUSR1);
+	if (signal == SIGUSR2)
+		kill(info->si_pid, SIGUSR2);
+}
+
+int	get_char(siginfo_t *info, int signal, int *c, int bits_nb)
 {
 	static int	bit_nb = 0;
 
@@ -21,6 +30,7 @@ int	get_char(int signal, int *c, int bits_nb)
 	if (signal == SIGUSR2)
 		*c &= ~(1 << bit_nb);
 	bit_nb += 1;
+	send_signal_back(SIGUSR1, info);
 	if (bit_nb == bits_nb)
 	{
 		bit_nb = 0;
@@ -29,49 +39,47 @@ int	get_char(int signal, int *c, int bits_nb)
 	return (0);
 }
 
-void	sigint_handler(int signal)
+void	sigint_handler(int signal, siginfo_t *info, void *ucontext)
 {
-	static int c = 0;
-	static char *str;
+	static int 		c = 0;
+	static char 	*str;
+	int				process_signal;
 
+	(void)ucontext;
 	if (!str)
-		str = ft_calloc(100, sizeof(char));
-	if(get_char(signal, &c, 8))
+		str = ft_calloc(1, sizeof(char));
+
+	process_signal = get_char(info, signal, &c, 8);
+	if (process_signal)
 	{
 		if (c == '\0')
 		{
-			printf("sizeof(*str) :%ld\n", sizeof(*str));
-			printf("sizeof(str) :%ld\n", sizeof(str));
+			send_signal_back(SIGUSR2, info);
+			ft_putstr_fd("\n============\n", 1);
+			ft_putstr_fd(str, 1);
+			ft_putstr_fd("\n============\n", 1);
 			ft_bzero(str, ft_strlen(str));
 			free(str);
+			str = NULL;
 		}
 		else
-		{
 			str = ft_free_join(str, c); 
-			ft_putstr_fd(str, 1);
-			printf("\n");
-		}
 		c = 0;
 	}
 }
 
-void	set_signal_action()
-{
-	struct	sigaction act;
-	
-	bzero(&act , sizeof(act));
-	act.sa_handler = &sigint_handler;
-	sigaction(SIGUSR1, &act, NULL);
-	sigaction(SIGUSR2, &act, NULL);
-}
-
 int	main(void)
 {
-	printf("getpid : %d\n", getpid());
-	set_signal_action();
+	ft_putnbr_fd(getpid(), 1);
+	ft_putstr_fd("\nServer started :\n", 1);
+	struct	sigaction act;
+	
+	ft_bzero(&act, sizeof(act));
+	act.sa_flags = SA_SIGINFO;
+	act.sa_sigaction = &sigint_handler;
+	sigaction(SIGUSR1, &act, NULL);
+	sigaction(SIGUSR2, &act, NULL);
 	while (1)
-	{
 		sleep(1);
-	}
 	return (0);
 }
