@@ -1,8 +1,8 @@
 CLIENT		= client
 SERVER		= server
 
-CC			= gcc -g
-CFLAGS		= -Wall -Wextra 
+CC			= gcc
+CFLAGS		= -Wall -Wextra  
 
 INC			= -I ./include -I ./libft 
 CLIENT_SRCS		= client.c 

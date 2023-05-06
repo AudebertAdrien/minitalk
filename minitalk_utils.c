@@ -6,7 +6,7 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 17:11:59 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/04/26 17:14:29 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/05/06 17:46:58 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*ft_join_char(char const *s1, char const c)
 	}
 	if (c)
 	{
-		ptr[i] = c; 
+		ptr[i] = c;
 		i++;
 	}
 	ptr[i] = '\0';
