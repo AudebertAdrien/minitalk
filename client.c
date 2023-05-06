@@ -6,7 +6,7 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/05/06 16:50:53 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/05/06 21:10:49 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	main(int argc, char **argv)
 		while (str[i])
 		{
 			send_bits(pid, str[i], 8);
-			usleep(100);
+			usleep(300);
 			i++;
 		}
 		send_bits(pid, '\0', 8);
