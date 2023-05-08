@@ -14,11 +14,11 @@ SERVER_OBJ		= $(SERVER_SRCS:%.c=%.o)
 %.o: %.c 
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
+all: make_libft $(CLIENT) $(SERVER)
+
 make_libft:
 	@echo ✅ "Compile libft\n"
 	@make re -s -C ./libft
-
-all: make_libft $(CLIENT) $(SERVER)
 
 $(CLIENT): $(CLIENT_OBJ)
 	@echo ✅ "Compile client\n"
