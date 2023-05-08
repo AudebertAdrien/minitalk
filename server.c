@@ -6,7 +6,7 @@
 /*   By: aaudeber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 13:51:05 by aaudeber          #+#    #+#             */
-/*   Updated: 2023/05/06 19:54:16 by aaudeber         ###   ########.fr       */
+/*   Updated: 2023/05/08 06:38:54 by aaudeber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	send_signal_back(int signal, siginfo_t *info)
 {
 	int	err;
-	
+
 	err = 0;
 	if (signal == SIGUSR1)
 		err = kill(info->si_pid, SIGUSR1);

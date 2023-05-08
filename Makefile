@@ -33,11 +33,11 @@ clean_lft:
 	@make fclean -s -C ./libft
 
 clean: clean_lft
+	@echo ✅ "Clean minitalk\n"
 	@rm -rf $(CLIENT_OBJ)
 	@rm -rf $(SERVER_OBJ)
 
 fclean: clean 
-	@echo ✅ "Clean minitalk\n"
 	@rm -f $(CLIENT) $(SERVER)
 
 re: fclean all
